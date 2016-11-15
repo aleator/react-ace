@@ -20,6 +20,7 @@ export default class ReactAce extends PureComponent {
     super(props);
     [
       'onChange',
+      'onChangeSelection',
       'onFocus',
       'onBlur',
       'onCopy',
@@ -76,6 +77,7 @@ export default class ReactAce extends PureComponent {
     this.editor.on('copy', this.onCopy);
     this.editor.on('paste', this.onPaste);
     this.editor.on('change', this.onChange);
+    this.editor.on('changeSelection', this.onChangeSelection);
     this.editor.session.on('changeScrollTop', this.onScroll);
     this.handleOptions(this.props);
     this.editor.getSession().setAnnotations(annotations || []);
@@ -196,6 +198,12 @@ export default class ReactAce extends PureComponent {
       this.props.onChange(value);
     }
   }
+  onChangeSelection() {
+    if (this.props.onChangeSelection && !this.silent) {
+      const value = this.editor.getSelectionRange(); 
+      this.props.onChangeSelection(value);
+    }
+  }
 
   onFocus() {
     if (this.props.onFocus) {
@@ -280,6 +288,7 @@ ReactAce.propTypes = {
   fontSize: PropTypes.number,
   showGutter: PropTypes.bool,
   onChange: PropTypes.func,
+  onChangeSelection: PropTypes.func,
   onCopy: PropTypes.func,
   onPaste: PropTypes.func,
   onFocus: PropTypes.func,
@@ -323,6 +332,7 @@ ReactAce.defaultProps = {
   fontSize: 12,
   showGutter: true,
   onChange: null,
+  onChangeSelection: null,
   onPaste: null,
   onLoad: null,
   onScroll: null,
